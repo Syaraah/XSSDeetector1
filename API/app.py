@@ -5,7 +5,7 @@ import requests
 from fastapi import FastAPI, Request
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from Preprocessing.text_cleaning import normalize_payload
+from preprocessing.text_cleaning import normalize_payload
 
 #Initialize FastAPI app
 app = FastAPI()

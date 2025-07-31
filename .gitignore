@@ -1,0 +1,14 @@
+# Abaikan environment dan cache
+venv/
+__pycache__/
+*.pyc
+
+# Abaikan model dan data besar
+*.npy
+*.h5
+*.pkl
+*.pyd
+
+# File editor
+.DS_Store
+*.swp

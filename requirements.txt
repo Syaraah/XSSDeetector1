@@ -1,6 +1,7 @@
+fastapi
+uvicorn
 pandas
 numpy
 tensorflow
 scikit-learn
-fastapi
-uvicorn
+python-multipart
