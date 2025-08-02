@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>XSS Detection API</title>
+</head>
+<body>
+    <h2>XSS Detection</h2>
+    <from id="form">
+        <textarea id="payload" name="payload" rows="5" cols="60" placeholder="Enter payload here..."></textarea><br>
+        <button type="submit">Detect</button>
+    </from>
+    <p id="result"></p >
+
+    <script>
+        const form = document.getElementById('form');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = document.getElementById('payload').value;
+
+            try {
+                const res = await fetch("http://127.0.0.1:8000/predict", {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ payload })
+                });
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                const data = await res.json();
+                result.innerText = `Prediction: ${data.prediction.toUpperCase()} (Confidence: ${data.confidence_score})`;
+            } catch (err) {
+                result.innerText = "Error: " + err.message;
+            }
+        });
+    </script>
+</body>
+</html>

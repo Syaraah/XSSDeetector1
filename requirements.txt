@@ -5,3 +5,5 @@ numpy
 tensorflow
 scikit-learn
 python-multipart
+joblib 
+jinja2
