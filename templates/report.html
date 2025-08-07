@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Riwayat Deteksi XSS</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>XSS <span>Detector</span></h2>
+        <a href="/">🚀 Deteksi XSS</a>
+        <a href="/history" class="active">📊 Riwayat Deteksi</a>
+    </div>
+
+    <div class="main">
+        <h1>Riwayat Deteksi Serangan XSS</h1>
+
+        <div class="summary-cards">
+            <div class="card">
+                <h2>{{ summary.days_analyzed }}</h2>
+                <p>Hari Dianalisis</p>
+            </div>
+            <div class="card">
+                <h2>{{ summary.total_attacks }}</h2>
+                <p>Total Serangan</p>
+            </div>
+            <div class="card">
+                <h2>{{ summary.most_common_type }}</h2>
+                <p>Jenis Serangan Dominan</p>
+            </div>
+        </div>
+
+        <div>
+            <canvas id="xssChart"></canvas>
+        </div>
+
+        <h2>Detail Harian</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tanggal</th>
+                    <th>Jenis XSS</th>
+                    <th>Jumlah Serangan</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in logs %}
+                <tr>
+                    <td>{{ row.date }}</td>
+                    <td>{{ row.attack_type }}</td>
+                    <td>{{ row.count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('xssChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ chart_data.dates|tojson }},
+                datasets: [{
+                    label: 'Jumlah Serangan',
+                    data: {{ chart_data.counts|tojson }},
+                    fill: false,
+                    borderColor: 'blue',
+                    tension: 0.1
+                }]
+            }
+        });
+    </script>
+</body>
+</html>

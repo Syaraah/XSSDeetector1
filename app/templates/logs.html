@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Riwayat Deteksi</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h2>Riwayat Deteksi XSS</h2>
+    <canvas id="xssChart" width="600" height="300"></canvas>
+    <script>
+        const timestamps = {{ timestamps | safe }};
+        const predictions = {{ predictions | safe }};
+
+        const ctx = document.getElementById('xssChart').getContext('2d');
+        const xssChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: timestamps,
+                datasets: [{
+                    label: 'Deteksi XSS (1 = Terdeteksi, 0 = Aman)',
+                    data: predictions,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

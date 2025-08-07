@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>XSS Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="sidebar">
+        <h2>XSS <span>Detector</span></h2>
+        <a href="/">🚀 Deteksi XSS</a>
+        <a href="#">📊 Riwayat Deteksi</a>
+    </div>
+
+    <div class="main">
+        <h1>Form Deteksi XSS</h1>
+        <form method="POST" action="/predict">
+            <label for="payload">Masukkan Payload</label>
+
+            {% if error %}
+                <div class="error">⚠️ {{ error }}</div>
+            {% endif %}
+
+            <textarea name="payload" placeholder="&lt;script&gt;alert('xss')&lt;/script&gt;" required></textarea>
+            <button type="submit">Deteksi Sekarang</button>
+        </form>
+    </div>
+</body>
+</html>
