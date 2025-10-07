@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+      .summary-cards { display:flex; gap:12px; margin-bottom:18px; }
+      .card { padding:12px; border-radius:8px; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.06); flex:1; text-align:center; }
+      .chart-container {
+          background: white;
+          padding: 20px;
+          border-radius: 8px;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+          margin: 20px 0;
+          min-height: 400px;
+      }
+      
+      .chart-container canvas {
+          max-height: 350px;
+          width: 100% !important;
+          display: block;
+      }
+
+      .notification-popup {
+          position: fixed;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          background-color: #ff4d4d;
+          color: white;
+          padding: 25px 30px;
+          border-radius: 12px;
+          box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+          z-index: 1001;
+          display: none;
+          font-family: sans-serif;
+          font-size: 18px;
+          width: 90%;
+          max-width: 450px;
+          text-align: center;
+      }
+      .notification-overlay {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: rgba(0, 0, 0, 0.5);
+          z-index: 1000;
+          display: none;
+      }
+    </style>
+</head>
+<body>
+    <div id="notification-overlay" class="notification-overlay"></div>
+    <div id="xss-notification" class="notification-popup">
+        <button id="notification-exit" style="position:absolute;top:10px;right:15px;background:none;border:none;color:white;font-size:22px;cursor:pointer;">&times;</button>
+        <strong>XSS Attack Detected!</strong>
+        <p id="notification-payload" style="margin-top: 10px; font-size: 15px;"></p>
+        <p id="notification-timestamp" style="margin-top: 5px; font-size: 12px; color: #f0f0f0;"></p>
+    </div>
+
+    <audio id="notification-sound" src="{{ url_for('static', filename='sounds/notification.mp3') }}" preload="auto"></audio>
+    
+    <div class="sidebar">
+        <h2>XSecure <span>AI</span></h2>
+        <div id="web-identity" style="margin-bottom:18px;font-size:15px;color:#444;background:#f3f3f3;padding:8px 10px;border-radius:6px;display:none;">
+            <b>Web:</b> <span id="web-name">-</span><br>
+            <b>Session:</b> <span id="session-code">-</span>
+        </div>
+        <a href="/history" class="active">🚀 Dashboard</a>
+        <a href="/">🛡️ XSS Detection</a>
+        <a href="/report">📊 Report</a>
+    </div>
+
+    <div class="main">
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="card">
+                <h2 id="totalAttacks">{{ summary.total_attacks if summary else 0 }}</h2>
+                <p>Total Attacks</p>
+            </div>
+            <div class="card">
+                <h2 id="totalAnalyses">{{ summary.total_analyses if summary else 0 }}</h2>
+                <p>Total Analyses</p>
+            </div>
+            <div class="card">
+                <h2 id="lastResult">{{ summary.last_result if summary else '-' }}</h2>
+                <p>Last Result</p>
+            </div>
+        </div>
+
+        <!-- Chart -->
+        <div class="chart-container">
+            <h3>📈 Detection History</h3>
+            <canvas id="xssChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Socket.IO client -->
+    {% comment %} <script>
+        // Ambil session code dari localStorage atau prompt user
+        let sessionCode = localStorage.getItem('session_code') || '';
+        if (!sessionCode) {
+            sessionCode = prompt('Masukkan Session Code (misal: ABC123):');
+            if (sessionCode) localStorage.setItem('session_code', sessionCode);
+        }
+
+        // Inisialisasi socket.io
+        const socket = io();
+
+        // Join ke server dengan session code
+        socket.on('connect', function() {
+            if (sessionCode) {
+                socket.emit('join', { session_code: sessionCode });
+            }
+        });
+
+        // Tampilkan identitas web/client jika join sukses
+        socket.on('join_result', function(data) {
+            const webIdentity = document.getElementById('web-identity');
+            const webName = document.getElementById('web-name');
+            const sessionCodeSpan = document.getElementById('session-code');
+            if (data && data.success) {
+                if (webIdentity) webIdentity.style.display = 'block';
+                if (webName) webName.textContent = data.web_name || '-';
+                if (sessionCodeSpan) sessionCodeSpan.textContent = sessionCode;
+            } else {
+                if (webIdentity) webIdentity.style.display = 'block';
+                if (webName) webName.textContent = 'INVALID';
+                if (sessionCodeSpan) sessionCodeSpan.textContent = sessionCode;
+            }
+        }); {% endcomment %}
+        
+    // Inisialisasi chart dengan data dari server-side
+        const labels = {{ chart_data.dates | tojson if chart_data is defined else '[]' }};
+        const maliciousData = {{ chart_data.malicious | tojson if chart_data is defined else '[]' }};
+        const benignData = {{ chart_data.benign | tojson if chart_data is defined else '[]' }};
+
+        // Fallback data jika chart_data kosong
+        const chartLabels = labels.length > 0 ? labels : ['No Data'];
+        const chartMalicious = maliciousData.length > 0 ? maliciousData : [0];
+        const chartBenign = benignData.length > 0 ? benignData : [0];
+
+        // Debug: log chart data
+        console.log('Chart Data:', {
+            labels: chartLabels,
+            malicious: chartMalicious,
+            benign: chartBenign
+        });
+
+        const ctx = document.getElementById('xssChart').getContext('2d');
+        const xssChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: chartLabels,
+                datasets: [
+                    { 
+                        label: 'Malicious', 
+                        data: chartMalicious, 
+                        borderColor: 'red', 
+                        backgroundColor: 'rgba(255,99,132,0.1)', 
+                        tension: 0.3,
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    },
+                    { 
+                        label: 'Benign', 
+                        data: chartBenign, 
+                        borderColor: 'green', 
+                        backgroundColor: 'rgba(75,192,192,0.1)', 
+                        tension: 0.3,
+                        borderWidth: 2,
+                        fill: false,
+                        pointRadius: 4,
+                        pointHoverRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                },
+                scales: { 
+                    x: { 
+                        title: { 
+                            display: true, 
+                            text: 'Date',
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    }, 
+                    y: { 
+                        beginAtZero: true, 
+                        title: { 
+                            display: true, 
+                        text: 'Detection Count' ,
+                            font: {
+                                size: 12,
+                                weight: 'bold'
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.1)'
+                        }
+                    } 
+                }
+            }
+        });
+
+        // Helper untuk menambah/ubah value tanggal pada chart
+        function addDetectionToChart(date, labelType) {
+            const idx = xssChart.data.labels.indexOf(date);
+            if (idx === -1) {
+                xssChart.data.labels.push(date);
+                xssChart.data.datasets.forEach(ds => ds.data.push(0));
+            }
+            const index = xssChart.data.labels.indexOf(date);
+            const dsIndex = labelType === 'Malicious' ? 0 : 1;
+            xssChart.data.datasets[dsIndex].data[index] = (xssChart.data.datasets[dsIndex].data[index] || 0) + 1;
+            xssChart.update('none'); 
+        }
+
+        // Update summary cards
+        function updateSummaryAndTable(entry) {
+            // Update summary numbers
+            const totalAnalysesEl = document.getElementById('totalAnalyses');
+            const totalAttacksEl = document.getElementById('totalAttacks');
+            const lastResultEl = document.getElementById('lastResult');
+
+            // Increment total analyses
+            if(totalAnalysesEl) totalAnalysesEl.textContent = parseInt(totalAnalysesEl.textContent || 0) + 1;
+            if(entry.attack_type === 'Malicious' && totalAttacksEl) totalAttacksEl.textContent = parseInt(totalAttacksEl.textContent || 0) + 1;
+            if(lastResultEl) lastResultEl.textContent = entry.attack_type;
+        }
+
+        // Listener broadcast
+        socket.on('new_detection', function(entry){
+            if(!entry || !entry.timestamp) return;
+
+            const date = entry.timestamp.split(' ')[0];
+            addDetectionToChart(date, entry.label || entry.attack_type);
+            updateSummaryAndTable({
+                timestamp: entry.timestamp,
+                attack_type: entry.label || entry.attack_type
+            });
+            if ((entry.label || entry.attack_type) === 'Malicious') {
+                showNotification(entry);
+            }
+        });
+
+        // Popup Notification Logic
+        let lastCheckedTimestamp = null;
+
+        function checkLatestLog() {
+            fetch('/api/latest-log')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.log && data.log.attack_type === 'Malicious') {
+                        const logTimestamp = data.log.timestamp;
+                        if (logTimestamp && logTimestamp !== lastCheckedTimestamp) {
+                            lastCheckedTimestamp = logTimestamp;
+                            showNotification(data.log);
+                        }
+                    }
+                })
+                .catch(error => console.error('Error fetching latest log:', error));
+        }
+
+        function showNotification(log) {
+            const overlay = document.getElementById('notification-overlay');
+            const notification = document.getElementById('xss-notification');
+            const payloadElement = document.getElementById('notification-payload');
+            const timestampElement = document.getElementById('notification-timestamp');
+            const sound = document.getElementById('notification-sound');
+
+            let payloadText = log.payload;
+            if(typeof payloadText !== 'string') payloadText = JSON.stringify(payloadText);
+            payloadElement.textContent = `Payload: ${payloadText.substring(0, 50)}...`;
+            timestampElement.textContent = log.timestamp ? `Detection Time: ${log.timestamp}` : 'Detection Time: -';
+
+            overlay.style.display = 'block';
+            notification.style.display = 'block';
+
+            sound.play().catch(error => console.warn("Audio play failed:", error));
+
+            window.notificationTimeout = setTimeout(() => {
+                notification.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 20000);
+
+            document.getElementById('notification-exit').onclick = function() {
+                notification.style.display = 'none';
+                overlay.style.display = 'none';
+                if(window.notificationTimeout) clearTimeout(window.notificationTimeout);
+            };
+        }
+
+        // Check for new logs every 10s
+        setInterval(checkLatestLog, 10000);
+    </script>
+</body>
+</html>

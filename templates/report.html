@@ -2,75 +2,173 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Riwayat Deteksi XSS</title>
+    <title>📊 Security Report</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    
+    <style>
+      .summary-cards { display:flex; gap:12px; margin-bottom:18px; }
+      .card { padding:12px; border-radius:8px; background:#fff; box-shadow:0 2px 6px rgba(0,0,0,0.06); flex:1; text-align:center; }
+      table { width:100%; border-collapse:collapse; margin-top:12px; }
+      th, td { padding:8px; border-bottom:1px solid #eaeaea; text-align:left; }
+    </style>
 </head>
 <body>
     <div class="sidebar">
-        <h2>XSS <span>Detector</span></h2>
-        <a href="/">🚀 Deteksi XSS</a>
-        <a href="/history" class="active">📊 Riwayat Deteksi</a>
+        <h2>XSecure <span>AI</span></h2>
+        <a href="/history">🚀 Dashboard</a>
+        <a href="/">🛡️ XSS Detection</a>
+        <a href="/report" class="active">📊 Report</a>
     </div>
 
     <div class="main">
-        <h1>Riwayat Deteksi Serangan XSS</h1>
+        <h1>📑 Security Reports</h1>
+        <p>Export and analyze your detection history</p>
 
+        <a href="/download_report" target="_blank">
+            <button style="padding: 10px 20px; background: #33ccff; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer;">
+                ⬇️ Export Report
+            </button>
+        </a>
+
+        <!-- Latest Detection -->
+        <div class="card" style="margin:20px 0;">
+            <h2>🔍 Latest Detection Results</h2>
+            <p><strong>Original Payload:</strong> <span id="latestPayload">{{ original if original else '-' }}</span></p>
+            <p><strong>Sanitized Payload:</strong> <span id="latestCleaned">{{ cleaned if cleaned else '-' }}</span></p>
+            <p><strong>Detection Status:</strong> 
+                <span id="latestStatus" style="color: {{ 'red' if label == 'Malicious' else 'green' }};">{{ label if label else '-' }}</span>
+            </p>
+            <p><strong>Confidence Level:</strong> <span id="latestConfidence">{{ confidence if confidence else '-' }}</span></p>
+            <p><strong>Detection Time:</strong> <span id="latestTime">{{ timestamp if timestamp else '-' }}</span></p>
+        </div>
+
+        <!-- Summary Cards -->
         <div class="summary-cards">
             <div class="card">
-                <h2>{{ summary.days_analyzed }}</h2>
-                <p>Hari Dianalisis</p>
+                <h2 id="totalAnalyses">{{ summary.total_analyses if summary else 0 }}</h2>
+                <p>Total Analyses</p>
             </div>
             <div class="card">
-                <h2>{{ summary.total_attacks }}</h2>
-                <p>Total Serangan</p>
+                <h2 id="totalAttacks">{{ summary.total_attacks if summary else 0 }}</h2>
+                <p>Total Attacks</p>
             </div>
             <div class="card">
-                <h2>{{ summary.most_common_type }}</h2>
-                <p>Jenis Serangan Dominan</p>
+                <h2 id="mostCommon">{{ summary.most_common_type if summary else '-' }}</h2>
+                <p>Most Common Type</p>
             </div>
         </div>
 
-        <div>
-            <canvas id="xssChart"></canvas>
-        </div>
-
-        <h2>Detail Harian</h2>
-        <table>
+        <!-- Detail Table -->
+        <h2>Detection History</h2>
+        <table id="reportTable">
             <thead>
                 <tr>
-                    <th>Tanggal</th>
-                    <th>Jenis XSS</th>
-                    <th>Jumlah Serangan</th>
+                    <th>Date</th>
+                    <th>Malicious</th>
+                    <th>Benign</th>
+                    <th>Download</th>
                 </tr>
             </thead>
-            <tbody>
-                {% for row in logs %}
-                <tr>
-                    <td>{{ row.date }}</td>
-                    <td>{{ row.attack_type }}</td>
-                    <td>{{ row.count }}</td>
-                </tr>
-                {% endfor %}
+            <tbody id="reportBody">
+                {% if table_data %}
+                    {% for row in table_data %}
+                    <tr>
+                        <td>{{ row.date }}</td>
+                        <td>{{ row.malicious }}</td>
+                        <td>{{ row.benign }}</td>
+                        <td>
+                            <div class="dropdown">
+                                <button class="download-btn" onclick="toggleDropdown(this)">⬇️ Download</button>
+                                <div class="dropdown-content">
+                                <a href="/download_logs/{{ row.date }}/csv" target="_blank" onclick="resetDropdown(this)">CSV</a>
+                                <a href="/download_logs/{{ row.date }}/json" target="_blank" onclick="resetDropdown(this)">JSON</a>
+                                <a href="/download_logs/{{ row.date }}/pdf" target="_blank" onclick="resetDropdown(this)">PDF</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr><td colspan="4" class="text-center">No attack history data available.</td></tr>
+                {% endif %}
             </tbody>
         </table>
     </div>
 
+    <!-- Real-time Update Script -->
     <script>
-        const ctx = document.getElementById('xssChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {{ chart_data.dates|tojson }},
-                datasets: [{
-                    label: 'Jumlah Serangan',
-                    data: {{ chart_data.counts|tojson }},
-                    fill: false,
-                    borderColor: 'blue',
-                    tension: 0.1
-                }]
+      window.onload = function() {
+        const socket = io();
+
+        function updateLatest(entry) {
+            document.getElementById("latestPayload").textContent = entry.original || '-';
+            document.getElementById("latestCleaned").textContent = entry.cleaned || '-';
+            const statusEl = document.getElementById("latestStatus");
+            statusEl.textContent = entry.label || entry.attack_type || '-';
+            statusEl.style.color = (entry.label || entry.attack_type) === 'Malicious' ? 'red' : 'green';
+            document.getElementById("latestConfidence").textContent = entry.confidence || '-';
+        }
+
+        function updateSummary(entry) {
+            const totalAttacksEl = document.getElementById('totalAttacks');
+            const totalAnalysesEl = document.getElementById('totalAnalyses');
+            const mostCommonEl = document.getElementById('mostCommon');
+
+            totalAttacksEl.textContent = parseInt(totalAttacksEl.textContent || 0) + (entry.label === 'Malicious' ? 1 : 0);
+            totalAnalysesEl.textContent = parseInt(totalAnalysesEl.textContent || 0) + 1;
+            mostCommonEl.textContent = entry.label || entry.attack_type;
+        }
+
+        function updateTable(entry) {
+            const tbody = document.getElementById('reportBody');
+            const date = entry.timestamp.split(' ')[0];
+            let updated = false;
+
+            for (let row of tbody.rows) {
+                if (row.cells[0].textContent === date && row.cells[2].textContent === entry.label) {
+                    row.cells[3].textContent = parseInt(row.cells[3].textContent) + 1;
+                    updated = true;
+                    break;
+                }
+            }
+            if (!updated) {
+                const newRow = document.createElement('tr');
+                newRow.innerHTML = `<td>${date}</td><td>${entry.label}</td><td>1</td>`;
+                tbody.insertBefore(newRow, tbody.firstChild);
+            }
+        }
+
+        socket.on('new_detection', function(entry) {
+            if(!entry || !entry.timestamp) return;
+            // Hanya tampilkan di report jika malicious
+            if((entry.label || entry.attack_type) === 'Malicious') {
+                updateLatest(entry);
+                updateSummary(entry);
+                updateTable(entry);
+                showNotification(entry);
             }
         });
+      }
+
+      // Dropdown global functions
+      function toggleDropdown(btn) {
+        const parent = btn.parentElement;
+        parent.classList.toggle("show");
+      }
+
+      function resetDropdown(link) {
+        const parent = link.closest(".dropdown");
+        setTimeout(() => {
+          parent.classList.remove("show");
+        }, 200);
+      }
+
+      window.onclick = function(event) {
+        if (!event.target.matches('.download-btn')) {
+          document.querySelectorAll(".dropdown").forEach(d => d.classList.remove("show"));
+        }
+      };
     </script>
 </body>
 </html>

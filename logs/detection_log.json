@@ -1,0 +1,310 @@
+[
+  {
+    "timestamp": "2025-07-18 20:28:51",
+    "payload": "<caption onpointerdown=alert(1)>XSS</caption>",
+    "cleaned": "<caption onpointerdown=alert(0)>xss</caption>",
+    "attack_type": "Malicious",
+    "confidence": 0.9976
+  },
+  {
+    "timestamp": "2025-08-19 12:52:32",
+    "payload": "<tt onmouseover=\"\"alert(1)\"\">test</tt>",
+    "cleaned": "<tt onmouseover=\"\"alert(0)\"\">test</tt>",
+    "attack_type": "Malicious",
+    "confidence": 1.0
+  },
+  {
+    "timestamp": "2025-08-19 12:59:10",
+    "payload": "<img src=x onerror=alert('XSS')>",
+    "cleaned": "<img src=x onerror=alert('xss')>",
+    "attack_type": "Malicious",
+    "confidence": 1.0
+  },
+  {
+    "timestamp": "2025-08-19 13:00:58",
+    "payload": "<img src=x onerror=alert('XSS')",
+    "cleaned": "<img src=x onerror=alert('xss')",
+    "attack_type": "Malicious",
+    "confidence": 1.0
+  },
+  {
+    "timestamp": "2025-08-19 13:30:47",
+    "payload": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "cleaned": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "attack_type": "Malicious",
+    "confidence": 0.9996
+  },
+  {
+    "timestamp": "2025-08-19 13:56:27",
+    "payload": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "cleaned": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "attack_type": "Malicious",
+    "confidence": 0.9996
+  },
+  {
+    "timestamp": "2025-08-19 13:56:43",
+    "payload": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "cleaned": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "attack_type": "Malicious",
+    "confidence": 0.9996
+  },
+  {
+    "timestamp": "2025-08-19 13:57:01",
+    "payload": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "cleaned": "<table onkeyup=\"alert(0)\" contenteditable>test</table>",
+    "attack_type": "Malicious",
+    "confidence": 0.9996
+  },
+  {
+    "timestamp": "2025-08-20 16:52:43",
+    "payload": "' OR '1'='1",
+    "cleaned": "' or '0'='0",
+    "attack_type": "Benign",
+    "confidence": 0.3093
+  },
+  {
+    "timestamp": "2025-08-20 16:53:50",
+    "payload": "https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9https://chatgpt.com/c/68a54e2c-5bc0-8320-a3c4-5216d250eba9",
+    "cleaned": "http://u",
+    "attack_type": "Benign",
+    "confidence": 0.4955
+  },
+  {
+    "timestamp": "2025-08-20 17:00:55",
+    "payload": "payload_4000 = \"<script>alert('XSS');</script>\" * 133 + \"X\"\n# (133 * 30 karakter \u2248 3990, ditambah 'X' jadi 4000)",
+    "cleaned": "payload_0 = \"<script>alert('xss');</script>\" * 0 + \"x\" # (0 * 0 karakter \u2248 0, ditambah 'x' jadi 0)",
+    "attack_type": "Malicious",
+    "confidence": 0.995
+  },
+  {
+    "timestamp": "2025-08-20 17:01:09",
+    "payload": "payload_4000 = \"<script>alert('XSS');</script>\" * 133 + \"X\"",
+    "cleaned": "payload_0 = \"<script>alert('xss');</script>\" * 0 + \"x\"",
+    "attack_type": "Malicious",
+    "confidence": 0.9941
+  },
+  {
+    "timestamp": "2025-08-21 17:54:07",
+    "payload": "<script>alert('xss)</script>",
+    "cleaned": "<script>alert('xss)</script>",
+    "attack_type": "Malicious",
+    "confidence": 0.9828
+  },
+  {
+    "timestamp": "2025-08-21 23:52:53",
+    "payload": "<script>alert('XSS')</script>",
+    "cleaned": "<script>alert('xss')</script>",
+    "attack_type": "Malicious",
+    "confidence": 0.9869
+  },
+  {
+    "timestamp": "2025-08-22 11:42:15",
+    "payload": "<script>alert('xss')</script>",
+    "cleaned": "<script>alert('xss')</script>",
+    "attack_type": "Malicious",
+    "confidence": 0.9869
+  },
+  {
+    "timestamp": "2025-08-15 15:34:10",
+    "payload": "<legend id=x tabindex=0onactivate=alert(0)></legend>",
+    "cleaned": "<legend id=x tabindex=0onactivate=alert(0)></legend>",
+    "attack_type": "Malicious",
+    "confidence": 0.999
+  },
+  {
+    "timestamp": "2025-08-15 15:35:16",
+    "payload": "\"<li><cite id=\"\"citerefrussellnorvig0\"\" class=\"\"citation\"\"><a href=\"\"/wiki/stuart_j._russell\"\" title=\"\"stuart j. russell\"\">russell, stuart j. </a>; <a href=\"\"/wiki/peter_norvig\"\" title=\"\"peter norvig\"\">norvig, peter </a> (0), <a rel=\"\"nofollow\"\" class=\"\"external text\"\" href=\"\"http://u intelligence: a modern approach </i> </a> (0nd ed.), upper saddle river, new jersey: prentice hall, <a href=\"\"/wiki/international_standard_book_number\"\" title=\"\"international standard book number\"\">isbn </a> <a href=\"\"/wiki/special:booksources/0-0-0-0\"\" title=\"\"special:booksources/0-0-0-0\"\"><bdi>0-0-0-0 </bdi> </a> </cite><span title=\"\"ctx_ver=z0.0-0&rft_val_fmt=info:ofi/fmt:kev:mtx:book&rft.genre=book&rft.btitle=artificial+intelligence:+a+modern+approach&rft.place=upper+saddle+river,+new+jersey&rft.edition=0nd&rft.pub=prentice+hall&rft.date=0&rft.isbn=0-0-0-0&rft.aulast=russell&rft.aufirst=stuart+j.&rft.au=norvig,+peter&rft_id=http://u class=\"\"z0\"\">",
+    "cleaned": "\"<li><cite id=\"\"citerefrussellnorvig0\"\" class=\"\"citation\"\"><a href=\"\"/wiki/stuart_j._russell\"\" title=\"\"stuart j. russell\"\">russell, stuart j. </a>; <a href=\"\"/wiki/peter_norvig\"\" title=\"\"peter norvig\"\">norvig, peter </a> (0), <a rel=\"\"nofollow\"\" class=\"\"external text\"\" href=\"\"http://u intelligence: a modern approach </i> </a> (0nd ed.), upper saddle river, new jersey: prentice hall, <a href=\"\"/wiki/international_standard_book_number\"\" title=\"\"international standard book number\"\">isbn </a> <a href=\"\"/wiki/special:booksources/0-0-0-0\"\" title=\"\"special:booksources/0-0-0-0\"\"><bdi>0-0-0-0 </bdi> </a> </cite><span title=\"\"ctx_ver=z0.0-0&rft_val_fmt=info:ofi/fmt:kev:mtx:book&rft.genre=book&rft.btitle=artificial+intelligence:+a+modern+approach&rft.place=upper+saddle+river,+new+jersey&rft.edition=0nd&rft.pub=prentice+hall&rft.date=0&rft.isbn=0-0-0-0&rft.aulast=russell&rft.aufirst=stuart+j.&rft.au=norvig,+peter&rft_id=http://u class=\"\"z0\"\">",
+    "attack_type": "Benign",
+    "confidence": 0.0028
+  },
+  {
+    "timestamp": "2025-08-13 15:35:52",
+    "payload": "<span class=\"\"fa fa-book\"\"> read the docs",
+    "cleaned": "<span class=\"\"fa fa-book\"\"> read the docs",
+    "attack_type": "Benign",
+    "confidence": 0.0004
+  },
+  {
+    "timestamp": "2025-08-13 15:36:32",
+    "payload": "<style id=x tabindex=0 onactivate=alert(0)></style>",
+    "cleaned": "<style id=x tabindex=0 onactivate=alert(0)></style>",
+    "attack_type": "Malicious",
+    "confidence": 0.9989
+  },
+  {
+    "timestamp": "2025-08-09 15:37:08",
+    "payload": "<li onbeforecopy=\"\"alert(0)\"\" contenteditable>test</li>",
+    "cleaned": "<li onbeforecopy=\"\"alert(0)\"\" contenteditable>test</li>",
+    "attack_type": "Malicious",
+    "confidence": 0.9678
+  },
+  {
+    "timestamp": "2025-08-09 15:38:06",
+    "payload": "document.scripts.length\n<applet onmouseleave=\"\"alert(0)\"\">test</applet>\n",
+    "cleaned": "document.scripts.length <applet onmouseleave=\"\"alert(0)\"\">test</applet>",
+    "attack_type": "Malicious",
+    "confidence": 0.9998
+  },
+  {
+    "timestamp": "2025-08-09 15:38:16",
+    "payload": "document.scripts.length\n",
+    "cleaned": "document.scripts.length",
+    "attack_type": "Malicious",
+    "confidence": 0.9931
+  },
+  {
+    "timestamp": "2025-08-09 15:38:31",
+    "payload": "<applet onmouseleave=\"\"alert(0)\"\">test</applet>\n",
+    "cleaned": "<applet onmouseleave=\"\"alert(0)\"\">test</applet>",
+    "attack_type": "Malicious",
+    "confidence": 0.9983
+  },
+  {
+    "timestamp": "2025-08-03 15:39:10",
+    "payload": "document.scripts.length",
+    "cleaned": "document.scripts.length",
+    "attack_type": "Malicious",
+    "confidence": 0.9931
+  },
+  {
+    "timestamp": "2025-08-03 15:39:55",
+    "payload": "<dt><a class=\"\"reference internal\"\" href=\"\"topics/jobs.html\"\"><span class=\"\"doc\"\">jobs: pausing and resuming crawls",
+    "cleaned": "<dt><a class=\"\"reference internal\"\" href=\"\"topics/jobs.html\"\"><span class=\"\"doc\"\">jobs: pausing and resuming crawls",
+    "attack_type": "Benign",
+    "confidence": 0.0009
+  },
+  {
+    "timestamp": "2025-08-04 15:40:35",
+    "payload": "</span> <span class=\"\"reference-text\"\">",
+    "cleaned": "</span> <span class=\"\"reference-text\"\">",
+    "attack_type": "Benign",
+    "confidence": 0.0006
+  },
+  {
+    "timestamp": "2025-08-09 15:40:56",
+    "payload": "</span> <span class=\"\"reference-text\"\">",
+    "cleaned": "</span> <span class=\"\"reference-text\"\">",
+    "attack_type": "Benign",
+    "confidence": 0.0006
+  },
+  {
+    "timestamp": "2025-08-02 15:41:50",
+    "payload": "hello",
+    "cleaned": "hello",
+    "attack_type": "Benign",
+    "confidence": 0.0318
+  },
+  {
+    "timestamp": "2025-08-02 15:41:59",
+    "payload": "hai",
+    "cleaned": "hai",
+    "attack_type": "Benign",
+    "confidence": 0.0318
+  },
+  {
+    "timestamp": "2025-08-02 15:42:04",
+    "payload": "hiiii",
+    "cleaned": "hiiii",
+    "attack_type": "Benign",
+    "confidence": 0.0318
+  },
+  {
+    "timestamp": "2025-08-19 15:42:22",
+    "payload": "hai hai hai",
+    "cleaned": "hai hai hai",
+    "attack_type": "Benign",
+    "confidence": 0.0318
+  },
+  {
+    "timestamp": "2025-08-19 15:56:11",
+    "payload": "<em onpointermove=alert(0)>xss</em>",
+    "cleaned": "<em onpointermove=alert(0)>xss</em>",
+    "attack_type": "Malicious",
+    "confidence": 0.9983
+  },
+  {
+    "timestamp": "2025-08-19 15:56:32",
+    "payload": "<em onpointermove=alert(0)>xss</em>",
+    "cleaned": "<em onpointermove=alert(0)>xss</em>",
+    "attack_type": "Malicious",
+    "confidence": 0.9983
+  },
+  {
+    "timestamp": "2025-08-19 15:57:23",
+    "payload": "<div class=\"\"toctree-wrapper compound\"\">",
+    "cleaned": "<div class=\"\"toctree-wrapper compound\"\">",
+    "attack_type": "Benign",
+    "confidence": 0.002
+  },
+  {
+    "timestamp": "2025-08-25 12:53:16",
+    "payload": "<script>alert('xss')</script>",
+    "cleaned": "<script>alert('xss')</script>",
+    "attack_type": "Malicious",
+    "confidence": 0.9869
+  },
+  {
+    "timestamp": "2025-08-30 16:37:53",
+    "payload": "<script>alert('xss')</script>",
+    "cleaned": "<script>alert('xss')</script>",
+    "attack_type": "Malicious",
+    "confidence": 0.9869
+  },
+  {
+    "timestamp": "2025-08-30 16:39:09",
+    "payload": "<script>  </script>",
+    "cleaned": "<script> </script>",
+    "attack_type": "Benign",
+    "confidence": 0.0477
+  },
+  {
+    "timestamp": "2025-08-31 12:27:24",
+    "payload": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE foo [ <!ELEMENT foo ANY >\n<!ENTITY xxe SYSTEM \"file:///etc/passwd\"> ]>\n<foo>&xxe;</foo>",
+    "cleaned": "<?xml version=\"0.0\" encoding=\"iso-0-0\"?> <!doctype foo [ <!element foo any > <!entity xxe system \"file:///etc/passwd\"> ]> <foo>&xxe;</foo>",
+    "attack_type": "Benign",
+    "confidence": 0.0079
+  },
+  {
+    "timestamp": "2025-08-31 12:48:48",
+    "payload": "<em onpointermove=alert(0)>xss</em>",
+    "cleaned": "<em onpointermove=alert(0)>xss</em>",
+    "attack_type": "Malicious",
+    "confidence": 0.9983
+  },
+  {
+    "timestamp": "2025-09-02 13:25:18",
+    "payload": "<em onpointermove=alert(0)>xss</em>",
+    "cleaned": "<em onpointermove=alert(0)>xss</em>",
+    "attack_type": "Malicious",
+    "confidence": 0.9983
+  },
+  {
+    "timestamp": "2025-09-03 11:26:51",
+    "payload": "<multicol onmouseup=\"\"alert(0)\"\">test</multicol>",
+    "cleaned": "<multicol onmouseup=\"\"alert(0)\"\">test</multicol>",
+    "attack_type": "Malicious",
+    "confidence": 0.9993
+  },
+  {
+    "timestamp": "2025-09-20 17:06:42",
+    "payload": "<spacer onkeypress=\"\"alert(1)\"\" contenteditable>test</spacer>",
+    "cleaned": "<spacer onkeypress=\"\"alert(0)\"\" contenteditable>test</spacer>",
+    "attack_type": "Malicious",
+    "confidence": 0.9984
+  },
+  {
+    "timestamp": "2025-09-20 17:06:57",
+    "payload": "<spacer onkeypress=\"\"alert(1)\"\" contenteditable>test</spacer>",
+    "cleaned": "<spacer onkeypress=\"\"alert(0)\"\" contenteditable>test</spacer>",
+    "attack_type": "Malicious",
+    "confidence": 0.9984
+  },
+  {
+    "timestamp": "2025-09-20 17:07:19",
+    "payload": "<spacer onkeypress=\"\"alert(1)\"\" contenteditable>test</spacer>",
+    "cleaned": "<spacer onkeypress=\"\"alert(0)\"\" contenteditable>test</spacer>",
+    "attack_type": "Malicious",
+    "confidence": 0.9984
+  }
+]

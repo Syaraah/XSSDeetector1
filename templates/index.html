@@ -2,28 +2,96 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>XSS Detector</title>
+    <title>XSS Detection System</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modal.css') }}">
 </head>
+
 <body>
     <div class="sidebar">
-        <h2>XSS <span>Detector</span></h2>
-        <a href="/">🚀 Deteksi XSS</a>
-        <a href="#">📊 Riwayat Deteksi</a>
+        <h2>XSecure <span>AI</span></h2>
+        <a href="/history">🚀 Dashboard</a>
+        <a href="/" class="active">🛡️ XSS Detection</a>
+        <a href="/report">📊 Report</a>
     </div>
 
     <div class="main">
-        <h1>Form Deteksi XSS</h1>
-        <form method="POST" action="/predict">
-            <label for="payload">Masukkan Payload</label>
+        <h1>🛡️ XSS Payload Detection</h1>
 
-            {% if error %}
-                <div class="error">⚠️ {{ error }}</div>
-            {% endif %}
-
-            <textarea name="payload" placeholder="&lt;script&gt;alert('xss')&lt;/script&gt;" required></textarea>
-            <button type="submit">Deteksi Sekarang</button>
+        <form id="payloadForm">
+            <label for="payload"><strong>Enter Payload:</strong></label><br>
+            <textarea name="payload" id="payloadInput" rows="6" cols="60" required placeholder="Enter XSS payload to analyze...">{{ request.form.payload if request.method == 'POST' else '' }}</textarea><br>
+            <button type="submit" id="submitBtn">🔍 Analyze (Real-time)</button>
         </form>
+
+        {% if error %}
+            <p style="color: red; margin-top: 10px;"><strong>{{ error }}</strong></p>
+        {% endif %}
+
+        <div id="resultContainer" style="margin-top: 30px;">
+            {% if original is defined and label is defined %}
+            <div class="card blink-highlight" id="resultCard">
+                <h2>🔍 Results</h2>
+                <p><strong>Original Payload:</strong> {{ original }}</p>
+                <p><strong>Payload After Cleaning:</strong> {{ cleaned }}</p>
+                <p><strong>Detection Status:</strong>
+                    <span style="color: {{ 'red' if label == 'Malicious' else 'green' }};">{{ label }}</span>
+                </p>
+                <p><strong>Probability:</strong> {{ confidence }}</p>
+            </div>
+            {% else %}
+            <div class="card" id="resultCard" style="display:none;"></div>
+            {% endif %}
+        </div>
     </div>
+
+    <!-- Socket.IO client -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      const form = document.getElementById('payloadForm');
+      const payloadInput = document.getElementById('payloadInput');
+      const resultCard = document.getElementById('resultCard');
+
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        const payload = payloadInput.value.trim();
+        if(!payload) return alert('Please enter a payload first.');
+        socket.emit('submit_payload', { payload });
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('submitBtn').textContent = '⏳ Processing...';
+      });
+
+      socket.on('detection_result', function(result){
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').textContent = '🔍 Analyze (Real-time)';
+        if(result.error){
+          alert(result.error);
+          return;
+        }
+
+        // tampilkan hasil di resultCard
+        resultCard.style.display = 'block';
+        resultCard.classList.add('blink-highlight');
+        resultCard.innerHTML = `
+            <h2>🔍 Analysis Results</h2>
+            <p><strong>Original Payload:</strong> ${escapeHtml(result.original)}</p>
+            <p><strong>Sanitized Payload:</strong> ${escapeHtml(result.cleaned)}</p>
+            <p><strong>Detection Status:</strong>
+                <span style="color: ${result.label === 'Malicious' ? 'red' : 'green'};">${result.label}</span>
+            </p>
+            <p><strong>Confidence Level:</strong> ${result.confidence}</p>
+        `;
+        setTimeout(()=> resultCard.classList.remove('blink-highlight'), 1000);
+      });
+
+      // Utility: sanitize output
+      function escapeHtml(unsafe) {
+        if(!unsafe) return '';
+        return unsafe.replace(/[&<"'>]/g, function(m) {
+          return ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' })[m];
+        });
+      }
+    </script>
 </body>
 </html>
